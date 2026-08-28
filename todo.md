@@ -1,0 +1,24 @@
+# Project TODO
+
+- [x] Audit the HappyMePlus repository, current PWA stack, core screens, and existing Firebase model
+- [x] Choose Expo/React Native as the Linux-friendly native iOS architecture
+- [x] Define the portrait-first iOS interface, screen map, color system, and user flows
+- [x] Define typed domain models and a versioned local persistence repository
+- [x] Add initial sample data and first-launch hydration without fake hardcoded metrics
+- [x] Build the five-tab native navigation structure
+- [x] Build the Today dashboard and quick moment composer
+- [x] Build reusable moment cards with reactions, favorites, and detail navigation
+- [x] Build the Joy Garden calendar and date-filtered archive
+- [x] Build private pod list, create/join flows, and pod detail experience
+- [x] Build received/sent encouragement inbox and compose flow
+- [x] Build the You profile, appearance, reminder, privacy, export, and reset controls
+- [x] Add edit, delete, native sharing, and confirmation flows for moments
+- [x] Add loading, empty, success, and error feedback to every core flow
+- [x] Add haptics and restrained native-feeling motion
+- [x] Create and install a unique HappyMe app icon and splash brand
+- [x] Update app name, theme tokens, bundle configuration, and platform metadata
+- [x] Add unit tests for persistence, reducers, calendar helpers, and key flows
+- [x] Run TypeScript, lint, and test checks and resolve regressions
+- [x] Verify the rendered app at mobile portrait dimensions
+- [x] Document local development, Expo Go testing, EAS iOS builds, App Store submission, and optional Supabase migration
+- [x] Prepare a clean Git repository handoff and final checkpoint

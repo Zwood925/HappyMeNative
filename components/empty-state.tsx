@@ -1,0 +1,5 @@
+import { StyleSheet, Text, View } from "react-native";
+import { AppIcon, type AppIconName } from "@/components/app-icon";
+import { useAppTheme } from "@/hooks/use-app-theme";
+export function EmptyState({ icon, title, body }: { icon: AppIconName; title: string; body: string }) { const { colors } = useAppTheme(); return <View style={[styles.container, { backgroundColor: colors.surfaceAlt }]}><View style={[styles.icon, { backgroundColor: colors.surface }]}><AppIcon name={icon} size={24} color={colors.coral} /></View><Text style={[styles.title, { color: colors.ink }]}>{title}</Text><Text style={[styles.body, { color: colors.muted }]}>{body}</Text></View>; }
+const styles = StyleSheet.create({ container: { borderRadius: 22, padding: 24, alignItems: "center" }, icon: { width: 48, height: 48, borderRadius: 24, alignItems: "center", justifyContent: "center", marginBottom: 12 }, title: { fontSize: 17, lineHeight: 22, fontWeight: "800" }, body: { fontSize: 14, lineHeight: 20, textAlign: "center", maxWidth: 280, marginTop: 5 } });

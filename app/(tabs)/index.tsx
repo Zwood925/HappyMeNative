@@ -1,48 +1,44 @@
-import { ScrollView, Text, View, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
+import { useMemo, useState } from "react";
+import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { AppHeader } from "@/components/app-header";
+import { AppIcon } from "@/components/app-icon";
+import { AppScreen } from "@/components/app-screen";
+import { EmptyState } from "@/components/empty-state";
+import { MomentCard } from "@/components/moment-card";
+import { MoodChip } from "@/components/mood-chip";
+import { useAppTheme } from "@/hooks/use-app-theme";
+import { isWithinLastDays, uniqueDayCount } from "@/lib/date";
+import type { Mood } from "@/lib/domain";
+import { haptic } from "@/lib/haptics";
+import { useHappy } from "@/lib/happy-store";
 
-import { ScreenContainer } from "@/components/screen-container";
+const moods: Mood[] = ["sunny", "peaceful", "proud", "connected"];
 
-/**
- * Home Screen - NativeWind Example
- *
- * This template uses NativeWind (Tailwind CSS for React Native).
- * You can use familiar Tailwind classes directly in className props.
- *
- * Key patterns:
- * - Use `className` instead of `style` for most styling
- * - Theme colors: use tokens directly (bg-background, text-foreground, bg-primary, etc.); no dark: prefix needed
- * - Responsive: standard Tailwind breakpoints work on web
- * - Custom colors defined in tailwind.config.js
- */
-export default function HomeScreen() {
-  return (
-    <ScreenContainer className="p-6">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="flex-1 gap-8">
-          {/* Hero Section */}
-          <View className="items-center gap-2">
-            <Text className="text-4xl font-bold text-foreground">Welcome</Text>
-            <Text className="text-base text-muted text-center">
-              Edit app/(tabs)/index.tsx to get started
-            </Text>
-          </View>
+export default function TodayScreen() {
+  const router = useRouter(); const { colors } = useAppTheme(); const { state, addMoment } = useHappy();
+  const [draft, setDraft] = useState(""); const [mood, setMood] = useState<Mood>("sunny"); const [podId, setPodId] = useState<string | undefined>();
+  const moments = useMemo(() => [...state.moments].sort((a, b) => b.createdAt.localeCompare(a.createdAt)), [state.moments]);
+  const weekMoments = useMemo(() => state.moments.filter((moment) => isWithinLastDays(moment.createdAt, 7)), [state.moments]);
+  const weekDays = uniqueDayCount(weekMoments.map((moment) => moment.createdAt));
+  const currentMember = state.members.find((member) => member.id === state.currentMemberId);
+  function saveQuickMoment() { if (!draft.trim()) return; addMoment({ text: draft, mood, podId }); haptic.success(); setDraft(""); setMood("sunny"); }
 
-          {/* Example Card */}
-          <View className="w-full max-w-sm self-center bg-surface rounded-2xl p-6 shadow-sm border border-border">
-            <Text className="text-lg font-semibold text-foreground mb-2">NativeWind Ready</Text>
-            <Text className="text-sm text-muted leading-relaxed">
-              Use Tailwind CSS classes directly in your React Native components.
-            </Text>
-          </View>
+  const header = <View style={styles.headerContent}>
+    <AppHeader eyebrow="A softer kind of social" title="Good to see you." subtitle="Notice one small thing worth keeping." actionIcon="notifications-outline" actionLabel="Open encouragements" onAction={() => router.push("/kindness" as never)} />
+    <View style={[styles.pulseCard, { backgroundColor: colors.ink, shadowColor: colors.shadow }]}><View style={styles.pulseGlowOne} /><View style={styles.pulseGlowTwo} /><View style={styles.pulseTop}><View style={styles.pulseIcon}><AppIcon name="sparkles" size={20} color={colors.ink} /></View><Text style={styles.pulseLabel}>YOUR JOY PULSE</Text></View><View style={styles.pulseStats}><View><Text style={styles.pulseNumber}>{weekMoments.length}</Text><Text style={styles.pulseCaption}>moments this week</Text></View><View style={styles.pulseDivider} /><View><Text style={styles.pulseNumber}>{weekDays}</Text><Text style={styles.pulseCaption}>days noticed</Text></View></View></View>
+    <View style={[styles.composer, { backgroundColor: colors.surface, borderColor: colors.border, shadowColor: colors.shadow }]}>
+      <View style={styles.composerTitleRow}><View style={[styles.avatar, { backgroundColor: currentMember?.color ?? colors.primary }]}><Text style={styles.avatarText}>{currentMember?.initials ?? "YO"}</Text></View><View style={styles.composerTitleCopy}><Text style={[styles.composerTitle, { color: colors.ink }]}>What made you smile?</Text><Text style={[styles.composerSubtitle, { color: colors.muted }]}>A sentence is enough.</Text></View><Pressable accessibilityRole="button" accessibilityLabel="Open full moment composer" onPress={() => router.push("/compose" as never)} style={({ pressed }) => [styles.expandButton, { backgroundColor: colors.surfaceAlt, opacity: pressed ? 0.6 : 1 }]}><AppIcon name="expand-outline" size={18} color={colors.muted} /></Pressable></View>
+      <TextInput accessibilityLabel="Happy moment" placeholder="The warm sun on my face, a ridiculous joke…" placeholderTextColor={colors.muted} value={draft} onChangeText={setDraft} multiline maxLength={420} style={[styles.input, { color: colors.ink, backgroundColor: colors.background, borderColor: colors.border }]} />
+      <FlatList horizontal data={moods} keyExtractor={(item) => item} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.moodRow} renderItem={({ item }) => <MoodChip mood={item} selected={mood === item} onPress={() => setMood(item)} />} />
+      <View style={styles.audienceRow}><Pressable accessibilityRole="button" onPress={() => setPodId(undefined)} style={[styles.audienceChip, { backgroundColor: !podId ? colors.primarySoft : colors.surfaceAlt }]}><AppIcon name="lock-closed-outline" size={15} color={!podId ? colors.ink : colors.muted} /><Text style={[styles.audienceText, { color: !podId ? colors.ink : colors.muted }]}>Just me</Text></Pressable>{state.pods.slice(0, 1).map((pod) => <Pressable key={pod.id} accessibilityRole="button" onPress={() => setPodId(pod.id)} style={[styles.audienceChip, { backgroundColor: podId === pod.id ? colors.primarySoft : colors.surfaceAlt }]}><AppIcon name="people-outline" size={15} color={podId === pod.id ? colors.ink : colors.muted} /><Text style={[styles.audienceText, { color: podId === pod.id ? colors.ink : colors.muted }]}>{pod.name}</Text></Pressable>)}<Pressable accessibilityRole="button" accessibilityState={{ disabled: !draft.trim() }} disabled={!draft.trim()} onPress={saveQuickMoment} style={({ pressed }) => [styles.saveButton, { backgroundColor: draft.trim() ? colors.primary : colors.border, opacity: pressed ? 0.75 : 1 }]}><AppIcon name="arrow-up" size={20} color={colors.ink} /></Pressable></View>
+    </View>
+    <View style={styles.sectionHeader}><View><Text style={[styles.sectionTitle, { color: colors.ink }]}>Recent light</Text><Text style={[styles.sectionSubtitle, { color: colors.muted }]}>Yours and your private pods</Text></View><Pressable onPress={() => router.push("/garden" as never)} style={({ pressed }) => ({ opacity: pressed ? 0.55 : 1 })}><Text style={[styles.seeAll, { color: colors.coral }]}>See garden</Text></Pressable></View>
+  </View>;
 
-          {/* Example Button */}
-          <View className="items-center">
-            <TouchableOpacity className="bg-primary px-6 py-3 rounded-full active:opacity-80">
-              <Text className="text-background font-semibold">Get Started</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
-    </ScreenContainer>
-  );
+  return <AppScreen><FlatList data={moments} keyExtractor={(item) => item.id} contentContainerStyle={styles.list} ListHeaderComponent={header} ListEmptyComponent={<EmptyState icon="sunny-outline" title="Your first bright spot lives here" body="Capture one small moment and begin your joy garden." />} ItemSeparatorComponent={() => <View style={styles.separator} />} renderItem={({ item }) => <MomentCard moment={item} authorName={state.members.find((member) => member.id === item.authorId)?.name ?? "Someone"} podName={state.pods.find((pod) => pod.id === item.podId)?.name} />} showsVerticalScrollIndicator={false} /></AppScreen>;
 }
+
+const styles = StyleSheet.create({
+  list: { paddingHorizontal: 18, paddingBottom: 32 }, headerContent: { gap: 22, paddingTop: 12, paddingBottom: 16 }, pulseCard: { minHeight: 168, borderRadius: 28, padding: 22, overflow: "hidden", shadowOpacity: 0.16, shadowRadius: 18, shadowOffset: { width: 0, height: 8 }, elevation: 4 }, pulseGlowOne: { position: "absolute", width: 150, height: 150, borderRadius: 75, backgroundColor: "rgba(246,184,74,0.24)", top: -72, right: -18 }, pulseGlowTwo: { position: "absolute", width: 100, height: 100, borderRadius: 50, backgroundColor: "rgba(158,139,216,0.22)", bottom: -52, left: 96 }, pulseTop: { flexDirection: "row", alignItems: "center", gap: 9 }, pulseIcon: { width: 36, height: 36, borderRadius: 18, backgroundColor: "#F6B84A", alignItems: "center", justifyContent: "center" }, pulseLabel: { color: "#FFF7EF", fontSize: 11, lineHeight: 15, letterSpacing: 1.4, fontWeight: "800" }, pulseStats: { flexDirection: "row", alignItems: "flex-end", marginTop: 22, gap: 24 }, pulseNumber: { color: "#FFFFFF", fontSize: 34, lineHeight: 39, fontWeight: "800" }, pulseCaption: { color: "rgba(255,255,255,0.72)", fontSize: 12, lineHeight: 17, marginTop: 1 }, pulseDivider: { width: 1, height: 46, backgroundColor: "rgba(255,255,255,0.18)", marginBottom: 2 }, composer: { borderRadius: 26, borderWidth: 1, padding: 17, shadowOpacity: 0.07, shadowRadius: 16, shadowOffset: { width: 0, height: 7 }, elevation: 2 }, composerTitleRow: { flexDirection: "row", alignItems: "center", gap: 11 }, avatar: { width: 42, height: 42, borderRadius: 21, alignItems: "center", justifyContent: "center" }, avatarText: { color: "#FFFFFF", fontSize: 12, lineHeight: 16, fontWeight: "900" }, composerTitleCopy: { flex: 1 }, composerTitle: { fontSize: 16, lineHeight: 21, fontWeight: "800" }, composerSubtitle: { fontSize: 12, lineHeight: 17, marginTop: 1 }, expandButton: { width: 38, height: 38, borderRadius: 19, alignItems: "center", justifyContent: "center" }, input: { minHeight: 100, borderRadius: 18, borderWidth: 1, marginTop: 15, paddingHorizontal: 14, paddingVertical: 13, textAlignVertical: "top", fontSize: 16, lineHeight: 23 }, moodRow: { gap: 8, paddingVertical: 14 }, audienceRow: { flexDirection: "row", alignItems: "center", gap: 8 }, audienceChip: { height: 36, paddingHorizontal: 11, borderRadius: 18, flexDirection: "row", alignItems: "center", gap: 6 }, audienceText: { fontSize: 12, lineHeight: 16, fontWeight: "700", maxWidth: 92 }, saveButton: { marginLeft: "auto", width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" }, sectionHeader: { marginTop: 4, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" }, sectionTitle: { fontSize: 22, lineHeight: 28, fontWeight: "800", letterSpacing: -0.4 }, sectionSubtitle: { fontSize: 13, lineHeight: 18, marginTop: 2 }, seeAll: { fontSize: 13, lineHeight: 18, fontWeight: "800", paddingBottom: 1 }, separator: { height: 13 },
+});
