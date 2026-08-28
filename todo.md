@@ -33,3 +33,15 @@
 - [ ] If cloud sync is required for build 1, apply the complete HappyMe Supabase schema and implement authentication plus remote repositories
 - [ ] Generate the first signed iOS production build and complete physical-device smoke testing in TestFlight
 - [ ] Publish a privacy policy and support URL, prepare App Store screenshots and copy, complete privacy and age-rating answers, and submit for App Review
+- [x] Clarify live development refresh versus Supabase cross-device data synchronization
+- [x] Verify the key type previously committed to GitHub without displaying or copying its value
+- [x] Confirm the current GitHub branch no longer tracks environment files and document any rotation requirement
+- [x] Define the recommended local Expo, Supabase, Codemagic, Vercel, TestFlight, and App Store workflow
+- [x] Provide exact commands and platform steps for the first signed iOS build and TestFlight upload
+- [x] Define which release steps the user must perform and which implementation work Manus can complete
+- [x] Clarify live development refresh versus Supabase cross-device data synchronization
+- [x] Verify the key type previously committed to GitHub without displaying or copying its value
+- [x] Confirm the current GitHub branch no longer tracks environment files and document any rotation requirement
+- [x] Define the recommended local Expo, Supabase, Codemagic, Vercel, TestFlight, and App Store workflow
+- [x] Provide exact commands and platform steps for the first signed iOS build and TestFlight upload
+- [x] Define which release steps the user must perform and which implementation work Manus can complete
