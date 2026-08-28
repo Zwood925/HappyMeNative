@@ -6,12 +6,12 @@ HappyMe is a native, privacy-first joy journal for iOS and Android. It turns the
 
 | Area | Implementation |
 |---|---|
-| Today | Weekly joy pulse, quick capture, mood and audience selection, recent moments, reactions, and favorites |
+| Today | Weekly joy pulse, quick capture, suggested tags, scalable pod selection, recent moments, reactions, favorites, and the signature Joy Bloom save celebration |
 | Joy Garden | Month navigation, highlighted moment days, date filtering, and archive cards |
 | Pods | Private pod list, local create/join flows, invitation codes, members, and pod-specific feeds |
 | Kindness | Received/sent inbox, unread state, direct encouragement composer, and optional pod context |
 | You | Personal metrics, favorite memory, appearance selection, gentle local reminders, JSON export, and reset controls |
-| Native details | Safe areas, portrait layouts, keyboard-aware composers, dark mode, share sheet, alerts, haptics, and local notifications |
+| Native details | Safe areas, portrait layouts, keyboard-safe scrolling composers, dark mode, share sheet, alerts, accessible motion, haptics, and local notifications |
 | Persistence | Versioned AsyncStorage snapshot with typed React context actions and a portable export format |
 | Quality | TypeScript, Expo ESLint, Vitest unit tests, mobile viewport review, custom icon, and EAS build profiles |
 
@@ -66,9 +66,8 @@ The complete checklist, signing notes, and App Store handoff are in [`docs/IOS_R
 | `lib/happy-store.tsx` | Local state transitions, persistence, import/export boundary |
 | `lib/reminders.ts` | Permission-aware local daily reminder scheduling |
 | `lib/seed.ts` | Resettable first-launch sample content |
+| `lib/tag-suggestions.ts` | Lightweight on-device tag suggestions without external AI services |
 | `supabase/schema.sql` | Optional cloud schema with row-level security |
-| `design.md` | Product-specific interface and interaction design |
-| `validation-notes.md` | Portrait visual-review record |
 | `todo.md` | Completed implementation ledger and remaining cloud follow-on |
 
 ## Cloud synchronization

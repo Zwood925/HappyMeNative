@@ -45,3 +45,13 @@
 - [x] Define the recommended local Expo, Supabase, Codemagic, Vercel, TestFlight, and App Store workflow
 - [x] Provide exact commands and platform steps for the first signed iOS build and TestFlight upload
 - [x] Define which release steps the user must perform and which implementation work Manus can complete
+- [x] Fix clipped user-name content at the rounded top edge of recent moment cards
+- [x] Replace the small quick-entry arrow with a larger, easier-to-hit labeled save action
+- [x] Make the full moment composer scroll and remain accessible above the iOS keyboard
+- [x] Make the Send Kindness composer scroll and keep all controls accessible above the iOS keyboard
+- [x] Add lightweight context-aware suggested tags while preserving manual tags
+- [x] Replace single-row pod choices with a scalable, attractive selector for multiple pods
+- [x] Include Sunrise Club and every joined pod in eligible audience/context selectors
+- [x] Add one distinctive joyful HappyMe interaction with accessible, restrained motion and haptics
+- [x] Audit the repository and remove nonessential planning, temporary, generated, and legacy files safely
+- [x] Re-run tests, TypeScript, lint, Expo diagnostics, production bundling, and mobile visual checks
