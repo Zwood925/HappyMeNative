@@ -22,3 +22,14 @@
 - [x] Verify the rendered app at mobile portrait dimensions
 - [x] Document local development, Expo Go testing, EAS iOS builds, App Store submission, and optional Supabase migration
 - [x] Prepare a clean Git repository handoff and final checkpoint
+- [x] Audit Supabase environment configuration without exposing secret values
+- [x] Verify whether Supabase is actually integrated or remains an optional migration path
+- [x] Audit the iOS bundle identifier, EAS project linkage, permissions, native plugins, and versioning
+- [x] Run Expo Doctor, automated tests, TypeScript, lint, and production configuration diagnostics
+- [x] Produce an exact TestFlight readiness verdict and App Store submission checklist
+- [ ] Sign in to the intended Expo account and link HappyMe to an EAS project
+- [ ] Confirm `com.zwood925.happyme` is registered to the intended Apple Developer team and App Store Connect record
+- [ ] Decide whether TestFlight build 1 remains local-first or includes real Supabase accounts and cross-device synchronization
+- [ ] If cloud sync is required for build 1, apply the complete HappyMe Supabase schema and implement authentication plus remote repositories
+- [ ] Generate the first signed iOS production build and complete physical-device smoke testing in TestFlight
+- [ ] Publish a privacy policy and support URL, prepare App Store screenshots and copy, complete privacy and age-rating answers, and submit for App Review
