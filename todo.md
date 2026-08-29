@@ -63,3 +63,12 @@
 - [x] Validate the new pod, invitation, haptic, and release-version changes
 - [x] Save and push the new release checkpoint before requesting TestFlight build confirmation
 - [ ] Trigger the confirmed signed iOS TestFlight build and verify its build status
+- [ ] Use the existing EAS production workflow exclusively for version 1.1.0; do not use Codemagic
+- [x] Fetch and compare `main` with `eas-local-setup` without modifying either remote branch
+- [x] Verify the EAS branch does not track environment files, access tokens, certificates, provisioning profiles, or generated credentials
+- [x] Identify the common ancestor and review every EAS branch change before merging
+- [x] Preserve `main`’s environment-file deletion when merging the older EAS branch history
+- [x] Merge the safe EAS configuration into the latest HappyMe 1.1.0 work and resolve all conflicts
+- [x] Confirm the combined project retains pod invite links, Joy Bloom haptics, version 1.1.0, and the intended EAS project linkage
+- [x] Run tests, TypeScript, lint, Expo Doctor, resolved configuration checks, and iOS production export after reconciliation
+- [x] Save and push one clean unified HappyMe release checkpoint
