@@ -55,3 +55,11 @@
 - [x] Add one distinctive joyful HappyMe interaction with accessible, restrained motion and haptics
 - [x] Audit the repository and remove nonessential planning, temporary, generated, and legacy files safely
 - [x] Re-run tests, TypeScript, lint, Expo diagnostics, production bundling, and mobile visual checks
+- [x] Increment the HappyMe marketing version and iOS build number for the next TestFlight release
+- [x] Add a streamlined create-pod action from the audience selector and Pods screen
+- [x] Generate a shareable HappyMe invite link for every newly created pod
+- [x] Add native share-sheet actions for pod invite links and retain the readable invite code
+- [x] Add a subtle coordinated haptic pulse when Joy Bloom begins
+- [x] Validate the new pod, invitation, haptic, and release-version changes
+- [x] Save and push the new release checkpoint before requesting TestFlight build confirmation
+- [ ] Trigger the confirmed signed iOS TestFlight build and verify its build status

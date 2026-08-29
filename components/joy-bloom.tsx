@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { AccessibilityInfo, Animated, Easing, Modal, StyleSheet, Text, View } from "react-native";
 import { AppIcon } from "@/components/app-icon";
+import { haptic } from "@/lib/haptics";
 
 interface JoyBloomProps {
   visible: boolean;
@@ -31,6 +32,7 @@ export function JoyBloom({ visible, onComplete }: JoyBloomProps) {
     bloomScale.setValue(0.72);
     petalScale.setValue(0.2);
     rotation.setValue(0);
+    haptic.light();
 
     AccessibilityInfo.isReduceMotionEnabled().then((reduceMotion) => {
       if (cancelled) return;

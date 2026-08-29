@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useReducer } from "react";
 import type { Encouragement, HappySnapshot, HappyState, Moment, NewEncouragementInput, NewMomentInput, NewPodInput, Pod, Preferences, ReactionKind } from "@/lib/domain";
+import type { PodInvitePayload } from "@/lib/pod-invites";
 import { createSeedSnapshot } from "@/lib/seed";
 
 const STORAGE_KEY = "happyme.snapshot.v1";
@@ -48,7 +49,7 @@ interface HappyContextValue {
   state: HappyState; addMoment: (input: NewMomentInput) => string;
   updateMoment: (id: string, input: Pick<NewMomentInput, "text" | "mood" | "podId">) => void;
   deleteMoment: (id: string) => void; toggleFavorite: (id: string) => void; reactToMoment: (id: string, reaction: ReactionKind) => void;
-  createPod: (input: NewPodInput) => string; joinPodByCode: (code: string) => boolean;
+  createPod: (input: NewPodInput) => Pod; joinPodByCode: (code: string) => boolean; joinPodFromInvite: (invite: PodInvitePayload) => string;
   sendEncouragement: (input: NewEncouragementInput) => string; markEncouragementRead: (id: string) => void;
   updatePreferences: (input: Partial<Preferences>) => void; resetData: () => void; exportSnapshot: () => string;
 }
@@ -78,9 +79,18 @@ export function HappyProvider({ children }: PropsWithChildren) {
   const toggleFavorite = useCallback((id: string) => dispatch({ type: "TOGGLE_FAVORITE", payload: id }), []);
   const reactToMoment = useCallback((id: string, reaction: ReactionKind) => dispatch({ type: "REACT", payload: { id, reaction } }), []);
   const createPod = useCallback((input: NewPodInput) => {
-    const id = makeId("pod"); dispatch({ type: "ADD_POD", payload: { id, name: input.name.trim(), description: input.description.trim(), color: input.color, memberIds: [state.currentMemberId], inviteCode: Math.random().toString(36).slice(2, 8).toUpperCase(), createdAt: new Date().toISOString() } }); return id;
+    const pod: Pod = { id: makeId("pod"), name: input.name.trim(), description: input.description.trim(), color: input.color, memberIds: [state.currentMemberId], inviteCode: Math.random().toString(36).slice(2, 8).toUpperCase(), createdAt: new Date().toISOString() };
+    dispatch({ type: "ADD_POD", payload: pod });
+    return pod;
   }, [state.currentMemberId]);
   const joinPodByCode = useCallback((code: string) => { const match = state.pods.find((pod) => pod.inviteCode === code.trim().toUpperCase()); if (!match) return false; dispatch({ type: "JOIN_POD", payload: match.id }); return true; }, [state.pods]);
+  const joinPodFromInvite = useCallback((invite: PodInvitePayload) => {
+    const existing = state.pods.find((pod) => pod.id === invite.podId || pod.inviteCode === invite.inviteCode);
+    if (existing) { dispatch({ type: "JOIN_POD", payload: existing.id }); return existing.id; }
+    const pod: Pod = { id: invite.podId, name: invite.name, description: invite.description, color: invite.color, memberIds: [state.currentMemberId], inviteCode: invite.inviteCode, createdAt: new Date().toISOString() };
+    dispatch({ type: "ADD_POD", payload: pod });
+    return pod.id;
+  }, [state.currentMemberId, state.pods]);
   const sendEncouragement = useCallback((input: NewEncouragementInput) => {
     const id = makeId("encouragement"); dispatch({ type: "ADD_ENCOURAGEMENT", payload: { id, fromMemberId: state.currentMemberId, toMemberId: input.toMemberId, podId: input.podId, message: input.message.trim(), createdAt: new Date().toISOString(), read: true } }); return id;
   }, [state.currentMemberId]);
@@ -88,7 +98,7 @@ export function HappyProvider({ children }: PropsWithChildren) {
   const updatePreferences = useCallback((input: Partial<Preferences>) => dispatch({ type: "UPDATE_PREFERENCES", payload: input }), []);
   const resetData = useCallback(() => dispatch({ type: "RESET", payload: createSeedSnapshot() }), []);
   const exportSnapshot = useCallback(() => JSON.stringify(toSnapshot(state), null, 2), [state]);
-  const value = useMemo(() => ({ state, addMoment, updateMoment, deleteMoment, toggleFavorite, reactToMoment, createPod, joinPodByCode, sendEncouragement, markEncouragementRead, updatePreferences, resetData, exportSnapshot }), [state, addMoment, updateMoment, deleteMoment, toggleFavorite, reactToMoment, createPod, joinPodByCode, sendEncouragement, markEncouragementRead, updatePreferences, resetData, exportSnapshot]);
+  const value = useMemo(() => ({ state, addMoment, updateMoment, deleteMoment, toggleFavorite, reactToMoment, createPod, joinPodByCode, joinPodFromInvite, sendEncouragement, markEncouragementRead, updatePreferences, resetData, exportSnapshot }), [state, addMoment, updateMoment, deleteMoment, toggleFavorite, reactToMoment, createPod, joinPodByCode, joinPodFromInvite, sendEncouragement, markEncouragementRead, updatePreferences, resetData, exportSnapshot]);
   return <HappyContext.Provider value={value}>{children}</HappyContext.Provider>;
 }
 

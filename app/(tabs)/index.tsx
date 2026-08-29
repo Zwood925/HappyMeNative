@@ -13,7 +13,6 @@ import { TagSuggestions } from "@/components/tag-suggestions";
 import { useAppTheme } from "@/hooks/use-app-theme";
 import { isWithinLastDays, uniqueDayCount } from "@/lib/date";
 import type { Mood } from "@/lib/domain";
-import { haptic } from "@/lib/haptics";
 import { useHappy } from "@/lib/happy-store";
 
 const moods: Mood[] = ["sunny", "peaceful", "proud", "connected"];
@@ -25,7 +24,7 @@ export default function TodayScreen() {
   const weekMoments = useMemo(() => state.moments.filter((moment) => isWithinLastDays(moment.createdAt, 7)), [state.moments]);
   const weekDays = uniqueDayCount(weekMoments.map((moment) => moment.createdAt));
   const currentMember = state.members.find((member) => member.id === state.currentMemberId);
-  function saveQuickMoment() { if (!draft.trim()) return; addMoment({ text: draft, mood, podId, tags }); haptic.success(); setDraft(""); setMood("sunny"); setPodId(undefined); setTags([]); setCelebrating(true); }
+  function saveQuickMoment() { if (!draft.trim()) return; addMoment({ text: draft, mood, podId, tags }); setDraft(""); setMood("sunny"); setPodId(undefined); setTags([]); setCelebrating(true); }
 
   const header = <View style={styles.headerContent}>
     <AppHeader eyebrow="A softer kind of social" title="Good to see you." subtitle="Notice one small thing worth keeping." actionIcon="notifications-outline" actionLabel="Open encouragements" onAction={() => router.push("/kindness" as never)} />
@@ -35,7 +34,7 @@ export default function TodayScreen() {
       <TextInput accessibilityLabel="Happy moment" placeholder="The warm sun on my face, a ridiculous joke…" placeholderTextColor={colors.muted} value={draft} onChangeText={setDraft} multiline maxLength={420} style={[styles.input, { color: colors.ink, backgroundColor: colors.background, borderColor: colors.border }]} />
       <TagSuggestions text={draft} mood={mood} selectedTags={tags} onChange={setTags} compact />
       <FlatList horizontal data={moods} keyExtractor={(item) => item} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.moodRow} renderItem={({ item }) => <MoodChip mood={item} selected={mood === item} onPress={() => setMood(item)} />} />
-      <View><Text style={[styles.audienceLabel, { color: colors.muted }]}>SHARE WITH</Text><AudiencePicker pods={state.pods} currentMemberId={state.currentMemberId} selectedPodId={podId} onChange={setPodId} compact /></View>
+      <View><Text style={[styles.audienceLabel, { color: colors.muted }]}>SHARE WITH</Text><AudiencePicker pods={state.pods} currentMemberId={state.currentMemberId} selectedPodId={podId} onChange={setPodId} compact onCreatePod={() => router.push({ pathname: "/pods", params: { create: "1", request: Date.now().toString() } } as never)} /></View>
       <Pressable accessibilityRole="button" accessibilityLabel="Save happy moment" accessibilityState={{ disabled: !draft.trim() }} disabled={!draft.trim()} onPress={saveQuickMoment} style={({ pressed }) => [styles.saveButton, { backgroundColor: draft.trim() ? colors.primary : colors.border, opacity: pressed ? 0.75 : 1, transform: [{ scale: pressed ? 0.97 : 1 }] }]}><Text style={[styles.saveButtonText, { color: colors.ink }]}>Keep this moment</Text><AppIcon name="sparkles" size={18} color={colors.ink} /></Pressable>
     </View>
     <View style={styles.sectionHeader}><View><Text style={[styles.sectionTitle, { color: colors.ink }]}>Recent light</Text><Text style={[styles.sectionSubtitle, { color: colors.muted }]}>Yours and your private pods</Text></View><Pressable onPress={() => router.push("/garden" as never)} style={({ pressed }) => ({ opacity: pressed ? 0.55 : 1 })}><Text style={[styles.seeAll, { color: colors.coral }]}>See garden</Text></Pressable></View>
