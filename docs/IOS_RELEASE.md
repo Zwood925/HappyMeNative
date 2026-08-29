@@ -1,80 +1,64 @@
-# HappyMe iOS Build and App Store Handoff
+# HappyMe 1.2.0 iOS Release Handoff
 
-## Recommended Linux workflow
+HappyMe is built on Linux through EAS Build’s hosted macOS workers. The current bundle identifier is `com.zwood925.happyme`, Apple Team ID is `C4J27RWDAX`, App Store ID is `6806403132`, and the Expo project is linked through `app.config.ts`.[1]
 
-HappyMe is designed so day-to-day TypeScript development can happen on Linux. Native iOS compilation still requires Apple tooling, so the practical Linux path is **EAS Build**, which sends the project to hosted macOS workers. Expo states that cloud development builds can be initiated from Linux and that EAS Build can manage iOS provisioning profiles and distribution certificates.[1][2]
+## Release command
 
-| Stage | Command | Result |
-|---|---|---|
-| Browser smoke test | `pnpm dev` | Expo web preview for fast layout checks |
-| Automated validation | `pnpm test && pnpm check && pnpm lint` | Unit, type, and lint checks |
-| Development client | `eas build --platform ios --profile development` | Signed build for registered iPhones |
-| Internal release | `eas build --platform ios --profile preview` | Internal-distribution build |
-| App Store binary | `eas build --platform ios --profile production` | Signed production `.ipa` |
-| Upload | `eas submit --platform ios --profile production` | Build uploaded to App Store Connect |
-
-## One-time setup
-
-Install the EAS command line tool and authenticate:
+After pulling the checkpoint and confirming `eas whoami`, create and upload the next build with:
 
 ```bash
-pnpm add --global eas-cli
-eas login
-eas whoami
+eas build --platform ios --profile production --auto-submit
 ```
 
-Run `eas build:configure` from the project root. The repository already contains `eas.json`, so keep its three profiles unless your team has a specific release policy. Expo documents EAS CLI installation, account login, and `eas build:configure` as the standard setup sequence.[2]
+The source release is `1.2.0`; EAS remote versioning and `autoIncrement` protect the App Store build number from duplication. The repository’s explicit baseline build number is `3`.
 
-The current bundle identifier is `com.zwood925.happyme`. Confirm that this identifier is unused or matches the App Store Connect record you intend to ship. If the original HappyMe listing already has a different bundle identifier, update `rawBundleId` in `app.config.ts` **before the first signed production build**.
+## Required console checks
 
-## Development build on a physical iPhone
-
-Run:
-
-```bash
-eas build --platform ios --profile development
-```
-
-When prompted, allow EAS to manage the distribution certificate and provisioning profile unless you have existing credentials that must be preserved. Register the target iPhone when prompted, install the completed build from the EAS build page or QR code, then start the JavaScript server with `pnpm dev`. A development build is the recommended environment once an app uses custom native configuration, and Expo supports these cloud builds from Linux.[1]
-
-## TestFlight and App Store submission
-
-Create the production binary:
-
-```bash
-eas build --platform ios --profile production
-```
-
-Then upload the newest compatible build:
-
-```bash
-eas submit --platform ios --profile production
-```
-
-EAS Submit works on Linux and uploads the build to App Store Connect. The build then appears in TestFlight after Apple finishes processing it; production release still requires completing the App Store Connect listing and submitting the selected build for review.[3]
-
-Before review, prepare the final app description, privacy policy URL, support URL, age rating, category, screenshots for required iPhone sizes, and the App Privacy answers. Verify local notifications, dark mode, Dynamic Type, offline launch, JSON export, deletion, and all privacy statements on a physical device.
-
-## Release checklist
-
-| Check | Expected result |
+| Service | Required check |
 |---|---|
-| Bundle identity | `com.zwood925.happyme`, or the identifier tied to the existing listing |
-| Display name | `HappyMe` |
-| Encryption declaration | `ITSAppUsesNonExemptEncryption` is `false` |
-| Icon and splash | Custom sun-smile artwork appears without an extra corner mask |
-| Notifications | Permission is requested only after the user enables the reminder |
-| Persistence | Moments remain after closing and reopening the application |
-| Privacy | Export and reset work; no analytics or third-party trackers are included |
-| Device coverage | Current iPhone, a smaller iPhone layout, dark mode, and increased text size are reviewed |
-| Store path | Production build reaches TestFlight before App Review submission |
+| EAS | Production build receives `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY`; neither is privileged |
+| Apple | Associated Domains includes `applinks:happy-me-native.vercel.app` |
+| Vercel | `/.well-known/apple-app-site-association` returns JSON containing `C4J27RWDAX.com.zwood925.happyme` without a redirect |
+| Supabase | Site URL and callback allow list match the production values; email confirmation remains required |
+| Supabase email | Custom SMTP is configured before inviting more than a very small internal group |
 
-## Known boundary
+## Physical-device cloud smoke test
 
-The delivered app is local-first. Pods, reactions, and encouragement flows are complete on the device, but they do not yet synchronize with other people’s devices. This avoids shipping an insecure or partially configured backend. The Supabase migration package in this repository is the next step when remote accounts and real-time pod membership are required.
+Use two email addresses and two TestFlight devices or isolated installations. Complete these checks before external beta testing:
+
+| Flow | Expected result |
+|---|---|
+| Signup | Confirmation email opens HappyMe; the new account begins with no sample moments or pods |
+| Recovery | Forgot Password sends a link; the link opens the new-password screen and the new password signs in |
+| Private data | A private moment appears after relaunch on the same account and is invisible to the second account |
+| Pod invitation | Account A creates a pod and texts the link; installed account B opens the app and joins |
+| Install fallback | An uninstalled-device link opens Vercel and the correct App Store page; after install, retapping the same text link preserves the invite through signup |
+| Collaboration | Pod moments, reactions, members, and kindness notes refresh across accounts |
+| Friends | Friend code request, acceptance, friend listing, and direct kindness work |
+| Safety | Report and Block hide the reported person’s shared content; the support form accepts a request |
+| Offline | Cached content remains readable; reconnect and Retry restore synchronization |
+| Deletion | Warnings appear; wrong password fails; `DELETE` plus the correct password removes the account and associated data; the same credentials cannot sign in |
+| Accessibility | Keyboard-safe forms, VoiceOver labels, larger text, dark mode, safe areas, haptics, and Reduced Motion behavior are reviewed |
+
+## App Store Connect URLs and privacy
+
+Use these public URLs after Vercel reports the deployment ready:
+
+| Field | URL |
+|---|---|
+| Privacy Policy URL | `https://happy-me-native.vercel.app/privacy` |
+| Support URL | `https://happy-me-native.vercel.app/support` |
+| Terms / community standards | `https://happy-me-native.vercel.app/terms` |
+
+The App Privacy questionnaire must disclose account identifiers and user-generated content used for app functionality, because cloud accounts transmit and retain emails, profile information, moments, pod content, reactions, kindness notes, reports, and support messages. The current app includes no advertising or analytics SDK.
+
+## Operational boundary
+
+Code and database security tests cannot replace the physical-device sequence above. Browser visual verification was skipped at the user’s request. Custom SMTP, report/support monitoring, the App Store privacy questionnaire, screenshots, review notes, and the final EAS build remain account-owner actions.
 
 ## References
 
-[1]: https://docs.expo.dev/develop/development-builds/introduction/ "Expo: Introduction to development builds"
-[2]: https://docs.expo.dev/build/setup/ "Expo: Create your first build"
-[3]: https://docs.expo.dev/submit/ios/ "Expo: Submit to the Apple App Store with EAS Submit"
+[1]: https://docs.expo.dev/build/introduction/ "Expo: EAS Build"
+[2]: https://docs.expo.dev/submit/ios/ "Expo: Submit to the Apple App Store"
+[3]: https://developer.apple.com/supporting-associated-domains/ "Apple: Supporting Associated Domains"
+[4]: https://developer.apple.com/support/offering-account-deletion-in-your-app/ "Apple: Offering account deletion in your app"

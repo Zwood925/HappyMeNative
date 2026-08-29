@@ -1,86 +1,82 @@
 # HappyMe
 
-HappyMe is a native, privacy-first joy journal for iOS and Android. It turns the original [HappyMePlus PWA](https://github.com/Zwood925/HappyMePlus) into an Expo/React Native experience built around **happy moments**, **small private pods**, a **Joy Garden**, and direct **encouragement** without public popularity mechanics.
+HappyMe is a privacy-first Expo/React Native joy journal for iOS. It combines **private moments**, **small trusted pods**, a **Joy Garden**, direct **kindness notes**, and the signature **Joy Bloom** celebration without public popularity mechanics.
 
-## What is included
+## Current release
 
-| Area | Implementation |
+HappyMe **1.2.0** uses authenticated Supabase cloud synchronization. New accounts begin clean; the previous sample dataset is not uploaded. Client applications contain only the public project URL and publishable key. PostgreSQL row-level security and narrowly granted functions enforce access boundaries.
+
+| Area | Production behavior |
 |---|---|
-| Today | Weekly joy pulse, quick capture, suggested tags, scalable pod selection, recent moments, reactions, favorites, and the signature Joy Bloom save celebration |
-| Joy Garden | Month navigation, highlighted moment days, date filtering, and archive cards |
-| Pods | Private pod list, local create/join flows, invitation codes, members, and pod-specific feeds |
-| Kindness | Received/sent inbox, unread state, direct encouragement composer, and optional pod context |
-| You | Personal metrics, favorite memory, appearance selection, gentle local reminders, JSON export, and reset controls |
-| Native details | Safe areas, portrait layouts, keyboard-safe scrolling composers, dark mode, share sheet, alerts, accessible motion, haptics, and local notifications |
-| Persistence | Versioned AsyncStorage snapshot with typed React context actions and a portable export format |
-| Quality | TypeScript, Expo ESLint, Vitest unit tests, mobile viewport review, custom icon, and EAS build profiles |
+| Accounts | Email/password signup, required email confirmation, encrypted native session storage, sign-in, sign-out, and password recovery |
+| Account deletion | Password reauthentication, explicit `DELETE` confirmation, Auth identity deletion, and cascading removal of associated HappyMe data |
+| Moments | Private by default; optionally shared into pods; cloud-synced tags, favorites, reactions, editing, deletion, and Realtime refresh |
+| Pods | Cloud creation, invite code, universal text link, member-scoped feed, and automatic invite claim after signup |
+| Friends | Personal friend code, requests, acceptance, direct kindness eligibility, and blocking |
+| Safety | Report shared content, block users, submit private support requests, and review public privacy and community terms |
+| Reliability | Per-account local snapshot cache, optimistic interactions, explicit sync state, retry, and production iOS/web exports |
 
-The app runs without an account and keeps its data on the device. This is a deliberate privacy and reliability choice for the first native release. The repository also includes an optional Supabase schema and migration guide for real cross-device accounts and multi-user pod synchronization.
-
-## Technology
-
-HappyMe uses Expo SDK 54, React Native 0.81, React 19, Expo Router, TypeScript, AsyncStorage, Expo Notifications, Expo Haptics, and Vitest. All application code and runtime libraries are open source. Cloud iOS compilation can be performed with EAS Build; Expo documents that EAS can build iOS binaries on hosted macOS workers and manage signing credentials, while EAS Submit can upload an iOS build from Linux.[1][2]
-
-## Run locally
+## Local development
 
 ```bash
 pnpm install
 pnpm dev
 ```
 
-Open the displayed QR code with the HappyMe development build or use the web preview for layout review. The automated checks are:
+Use the HappyMe development build on an iPhone for Fast Refresh. The normal deterministic checks are:
 
 ```bash
 pnpm test
 pnpm check
 pnpm lint
+npx expo-doctor
 ```
 
-Because this app uses native notification configuration, a custom development build is recommended for device testing. Expo’s development-build workflow describes this as a custom version of Expo Go and supports cloud iOS builds initiated from Linux.[3]
-
-## Build for an iPhone from Linux
+The gated two-account security test creates temporary users, verifies private and pod-scoped access, invitations, reactions, encouragements, friends, reports, blocking, support, and deletion, then removes its test accounts:
 
 ```bash
-pnpm add --global eas-cli
-eas login
-eas build:configure
-eas build --platform ios --profile development
+RUN_LIVE_SUPABASE_TESTS=1 pnpm vitest run tests/supabase.cloud.test.ts
 ```
 
-After installing the resulting build on a registered iPhone, run `pnpm dev` and connect through the development client. For a TestFlight/App Store binary, use:
+Do not run that command casually against production email-confirmation settings. The release process enables temporary test auto-confirmation only during a controlled test and restores required confirmation afterward.
+
+## Production services
+
+| Service | Responsibility |
+|---|---|
+| Supabase | Auth, Postgres, RLS, Realtime, account deletion, invite claiming, friends, reports, blocks, and support requests |
+| Vercel | `happy-me-native.vercel.app` invite fallback, privacy notice, terms, support form, and Apple association endpoint |
+| EAS | Signed iOS builds and App Store Connect submission |
+| Apple | TestFlight, App Store distribution, universal-link verification, and device services |
+
+Universal pod invitations use `https://happy-me-native.vercel.app/join?...`. Installed users open HappyMe directly. A new user sees the App Store fallback, installs HappyMe, retaps the same text link, creates an account, confirms the email, and is automatically joined after authentication.
+
+## Build and submit
 
 ```bash
-eas build --platform ios --profile production
-eas submit --platform ios
+eas build --platform ios --profile production --auto-submit
 ```
 
-The complete checklist, signing notes, and App Store handoff are in [`docs/IOS_RELEASE.md`](docs/IOS_RELEASE.md). Expo’s official setup guide confirms that `eas build --platform ios` produces a store build and can manage provisioning profiles and distribution certificates.[1][4]
+The build profiles include only client-safe Supabase publishable values. Never add a Supabase secret/service-role key, database password, Apple private key, provisioning profile, or `.env` file to Git.
+
+See [`docs/IOS_RELEASE.md`](docs/IOS_RELEASE.md) for the physical-device and App Store checklist and [`docs/SUPABASE_MIGRATION.md`](docs/SUPABASE_MIGRATION.md) for the live security architecture and console operations.
 
 ## Project map
 
 | Path | Responsibility |
 |---|---|
-| `app/` | Expo Router screens and navigation |
-| `components/` | Reusable native UI components |
-| `lib/domain.ts` | Stable application vocabulary and data contracts |
-| `lib/happy-store.tsx` | Local state transitions, persistence, import/export boundary |
-| `lib/reminders.ts` | Permission-aware local daily reminder scheduling |
-| `lib/seed.ts` | Resettable first-launch sample content |
-| `lib/tag-suggestions.ts` | Lightweight on-device tag suggestions without external AI services |
-| `supabase/schema.sql` | Optional cloud schema with row-level security |
-| `todo.md` | Completed implementation ledger and remaining cloud follow-on |
-
-## Cloud synchronization
-
-The shipped app is fully useful in local mode. It does not pretend that sample pod members are connected remote accounts. When you want live multi-user pods, follow [`docs/SUPABASE_MIGRATION.md`](docs/SUPABASE_MIGRATION.md), apply the included SQL, and add a Supabase repository implementation behind the same domain actions. This keeps the native UI stable while cloud authentication, row-level security, and real-time delivery are introduced deliberately.
-
-## License
-
-The new HappyMe native code is available under the MIT License. Third-party packages retain their own licenses.
+| `app/` | Expo Router account, journal, pods, friends, safety, support, policy, and deletion screens |
+| `components/` | Reusable native UI and Joy Bloom |
+| `lib/auth.tsx` | Supabase account and deletion lifecycle |
+| `lib/happy-store.tsx` | Cloud repository, cache, optimistic writes, and Realtime refresh |
+| `lib/pending-invite.ts` | Durable invitation intent and automatic post-auth claim |
+| `supabase/schema.sql` | Rerunnable production schema, RLS, and security-definer functions |
+| `api/apple-app-site-association.ts` | Dynamic Apple Universal Link association response |
+| `vercel.json` | Static Expo web export and AASA rewrite |
 
 ## References
 
 [1]: https://docs.expo.dev/build/introduction/ "Expo: EAS Build"
-[2]: https://docs.expo.dev/submit/ios/ "Expo: Submit to the Apple App Store with EAS Submit"
-[3]: https://docs.expo.dev/develop/development-builds/introduction/ "Expo: Introduction to development builds"
-[4]: https://docs.expo.dev/build/setup/ "Expo: Create your first build"
+[2]: https://docs.expo.dev/submit/ios/ "Expo: Submit to the Apple App Store"
+[3]: https://supabase.com/docs/guides/auth/row-level-security "Supabase: Row Level Security"
+[4]: https://developer.apple.com/support/offering-account-deletion-in-your-app/ "Apple: Offering account deletion in your app"

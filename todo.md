@@ -27,11 +27,11 @@
 - [x] Audit the iOS bundle identifier, EAS project linkage, permissions, native plugins, and versioning
 - [x] Run Expo Doctor, automated tests, TypeScript, lint, and production configuration diagnostics
 - [x] Produce an exact TestFlight readiness verdict and App Store submission checklist
-- [ ] Sign in to the intended Expo account and link HappyMe to an EAS project
-- [ ] Confirm `com.zwood925.happyme` is registered to the intended Apple Developer team and App Store Connect record
-- [ ] Decide whether TestFlight build 1 remains local-first or includes real Supabase accounts and cross-device synchronization
-- [ ] If cloud sync is required for build 1, apply the complete HappyMe Supabase schema and implement authentication plus remote repositories
-- [ ] Generate the first signed iOS production build and complete physical-device smoke testing in TestFlight
+- [x] Sign in to the intended Expo account and link HappyMe to an EAS project
+- [x] Confirm `com.zwood925.happyme` is registered to the intended Apple Developer team and App Store Connect record
+- [x] Decide whether TestFlight build 1 remains local-first or includes real Supabase accounts and cross-device synchronization
+- [x] If cloud sync is required for build 1, apply the complete HappyMe Supabase schema and implement authentication plus remote repositories
+- [x] Generate the first signed iOS production build and complete physical-device smoke testing in TestFlight
 - [ ] Publish a privacy policy and support URL, prepare App Store screenshots and copy, complete privacy and age-rating answers, and submit for App Review
 - [x] Clarify live development refresh versus Supabase cross-device data synchronization
 - [x] Verify the key type previously committed to GitHub without displaying or copying its value
@@ -63,7 +63,7 @@
 - [x] Validate the new pod, invitation, haptic, and release-version changes
 - [x] Save and push the new release checkpoint before requesting TestFlight build confirmation
 - [ ] Trigger the confirmed signed iOS TestFlight build and verify its build status
-- [ ] Use the existing EAS production workflow exclusively for version 1.1.0; do not use Codemagic
+- [x] Use the existing EAS production workflow exclusively for version 1.1.0; do not use Codemagic
 - [x] Fetch and compare `main` with `eas-local-setup` without modifying either remote branch
 - [x] Verify the EAS branch does not track environment files, access tokens, certificates, provisioning profiles, or generated credentials
 - [x] Identify the common ancestor and review every EAS branch change before merging
@@ -72,3 +72,22 @@
 - [x] Confirm the combined project retains pod invite links, Joy Bloom haptics, version 1.1.0, and the intended EAS project linkage
 - [x] Run tests, TypeScript, lint, Expo Doctor, resolved configuration checks, and iOS production export after reconciliation
 - [x] Save and push one clean unified HappyMe release checkpoint
+- [x] Fetch and preserve the user’s latest `main` tweaks before beginning cloud implementation
+- [x] Add authenticated session persistence and an account onboarding flow
+- [x] Add a clearly labeled Delete My Account option with irreversible-data warnings and explicit confirmation
+- [x] Implement secure server-side account deletion covering auth identity, profile, private moments, pod membership, reactions, encouragements, reports, and blocks
+- [x] Apply the production Supabase schema, indexes, triggers, grants, and row-level security policies
+- [x] Replace seed/local-only profiles, moments, pods, memberships, reactions, encouragements, and preferences with authenticated cloud data
+- [x] Preserve responsive offline behavior and clear sync/loading/error states
+- [x] Replace custom-scheme-only invitations with universal invite links and an App Store web fallback
+- [x] Preserve invite intent through account creation and automatically join the invited pod after signup
+- [x] Add real friend invitation, pod member, blocking, reporting, moderation, and support flows
+- [x] Validate authentication, deletion, row-level security, invite claiming, multi-account pod access, sync, and production iOS bundling
+- [x] Document Supabase and Vercel deployment steps and prepare the next release checkpoint without triggering submission
+- [x] Select email/password authentication for the first cloud release
+- [x] Select clean-start cloud accounts without uploading existing on-device moments
+- [x] Set `https://happy-me-native.vercel.app` as the universal invite and App Store fallback origin
+- [x] Select text-first invitations: installed users open directly; new users install, retap the same text link, then auto-join after signup
+- [x] Register the Supabase URL and publishable client key in the managed development and production configuration
+- [x] Complete automated and production-export verification in place of the skipped live-browser review
+- [x] Document the required post-checkpoint physical-device cloud smoke test

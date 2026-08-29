@@ -7,16 +7,19 @@ const pod = {
   description: "Early light and strong coffee.",
   color: "#F6B84A",
   inviteCode: "SUN123",
+  inviteToken: "b71b8698-7c53-4967-82d8-405eba3823c6",
 };
 
 describe("pod invite links", () => {
   it("round-trips a pod through the HappyMe deep link", () => {
     const link = createPodInviteLink(pod);
     const url = new URL(link);
-    expect(url.protocol).toBe("happyme:");
+    expect(url.protocol).toBe("https:");
+    expect(url.host).toBe("happy-me-native.vercel.app");
     expect(parsePodInvite(Object.fromEntries(url.searchParams))).toEqual({
       podId: pod.id,
       inviteCode: pod.inviteCode,
+      inviteToken: pod.inviteToken,
       name: pod.name,
       description: pod.description,
       color: pod.color,

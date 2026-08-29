@@ -1,0 +1,14 @@
+{
+  "buildCommand": "pnpm exec expo export --platform web",
+  "outputDirectory": "dist",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/.well-known/apple-app-site-association", "destination": "/api/apple-app-site-association" }
+  ],
+  "headers": [
+    {
+      "source": "/.well-known/apple-app-site-association",
+      "headers": [{ "key": "Content-Type", "value": "application/json" }]
+    }
+  ]
+}

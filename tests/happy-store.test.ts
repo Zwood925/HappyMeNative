@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { happyReducer, toSnapshot } from "@/lib/happy-store";
+import { happyReducer, toSnapshot } from "@/lib/happy-reducer";
 import { createSeedSnapshot } from "@/lib/seed";
 
 function state() {
-  return { ...createSeedSnapshot(), hydrated: true };
+  return { ...createSeedSnapshot(), hydrated: true, syncing: false };
 }
 
 describe("HappyMe local state", () => {

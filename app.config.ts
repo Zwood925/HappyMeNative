@@ -41,7 +41,7 @@ const env = {
 const config: ExpoConfig = {
   name: env.appName,
   slug: env.appSlug,
-  version: "1.1.0",
+  version: "1.2.0",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: env.scheme,
@@ -50,7 +50,8 @@ const config: ExpoConfig = {
   ios: {
     supportsTablet: false,
     bundleIdentifier: env.iosBundleId,
-    buildNumber: "2",
+    buildNumber: "3",
+    associatedDomains: ["applinks:happy-me-native.vercel.app"],
     "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -63,9 +64,21 @@ const config: ExpoConfig = {
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
     package: env.androidPackage,
-    versionCode: 2,
+    versionCode: 3,
     permissions: ["POST_NOTIFICATIONS"],
     intentFilters: [
+      {
+        action: "VIEW",
+        autoVerify: true,
+        data: [
+          {
+            scheme: "https",
+            host: "happy-me-native.vercel.app",
+            pathPrefix: "/join",
+          },
+        ],
+        category: ["BROWSABLE", "DEFAULT"],
+      },
       {
         action: "VIEW",
         autoVerify: true,
@@ -87,6 +100,7 @@ const config: ExpoConfig = {
   plugins: [
     "expo-router",
     "expo-font",
+    "expo-secure-store",
     [
       "expo-notifications",
       {
