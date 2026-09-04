@@ -44,13 +44,13 @@ export function TagSuggestions({ text, mood, selectedTags, onChange, compact = f
 
 const styles = StyleSheet.create({
   container: { gap: 9 },
-  label: { fontSize: 10, lineHeight: 14, letterSpacing: 1.05, fontWeight: "800", marginBottom: 6 },
+  label: { fontSize: 13, lineHeight: 18, letterSpacing: 1.05, fontWeight: "800", marginBottom: 6 },
   wrap: { flexDirection: "row", flexWrap: "wrap", gap: 7 },
-  selectedChip: { minHeight: 34, paddingHorizontal: 10, borderRadius: 17, borderWidth: 1, flexDirection: "row", alignItems: "center", gap: 5 },
-  selectedText: { fontSize: 11, lineHeight: 15, fontWeight: "800" },
-  suggestionChip: { minHeight: 34, paddingHorizontal: 10, borderRadius: 17, borderWidth: 1, flexDirection: "row", alignItems: "center", gap: 4 },
-  suggestionText: { fontSize: 11, lineHeight: 15, fontWeight: "700" },
+  selectedChip: { minHeight: 40, paddingHorizontal: 11, paddingVertical: 6, borderRadius: 20, borderWidth: 1, flexDirection: "row", alignItems: "center", gap: 5 },
+  selectedText: { fontSize: 15, lineHeight: 21, fontWeight: "800" },
+  suggestionChip: { minHeight: 40, paddingHorizontal: 11, paddingVertical: 6, borderRadius: 20, borderWidth: 1, flexDirection: "row", alignItems: "center", gap: 4 },
+  suggestionText: { fontSize: 15, lineHeight: 21, fontWeight: "700" },
   customRow: { flexDirection: "row", alignItems: "center", gap: 8 },
-  customInput: { flex: 1, minHeight: 44, borderRadius: 22, borderWidth: 1, paddingHorizontal: 14, fontSize: 14, lineHeight: 19 },
-  addButton: { width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center" },
+  customInput: { flex: 1, minHeight: 48, borderRadius: 24, borderWidth: 1, paddingHorizontal: 14, paddingVertical: 9, fontSize: 15, lineHeight: 22 },
+  addButton: { minWidth: 48, minHeight: 48, borderRadius: 24, alignItems: "center", justifyContent: "center" },
 });

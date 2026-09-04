@@ -91,3 +91,12 @@
 - [x] Register the Supabase URL and publishable client key in the managed development and production configuration
 - [x] Complete automated and production-export verification in place of the skipped live-browser review
 - [x] Document the required post-checkpoint physical-device cloud smoke test
+- [x] Fetch and preserve the latest GitHub `main` before applying the App Review fix
+- [x] Audit every retained screen for type below accessible sizes, weak contrast, clipping, fixed heights, and disabled scaling
+- [x] Establish a readable shared typography baseline with larger minimum body, label, caption, and control text
+- [x] Correct every screen-specific typography and iPad compatibility issue found in the audit
+- [x] Verify layouts at iPhone and iPad Air 11-inch dimensions and with larger text settings
+- [x] Set `ios.buildNumber` to `"4"` for the corrected App Review submission
+- [x] Run unit tests, TypeScript, lint, Expo Doctor, resolved configuration, and production iOS/web exports
+- [ ] Save the App Review remediation checkpoint and push it to GitHub `main`
+- [ ] Trigger the authorized EAS production build with `--auto-submit` and verify the build/submission status

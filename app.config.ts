@@ -50,7 +50,7 @@ const config: ExpoConfig = {
   ios: {
     supportsTablet: false,
     bundleIdentifier: env.iosBundleId,
-    buildNumber: "3",
+    buildNumber: "4",
     associatedDomains: ["applinks:happy-me-native.vercel.app"],
     "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false

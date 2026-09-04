@@ -83,5 +83,5 @@ const styles = StyleSheet.create({
   petal: { position: "absolute", width: 28, height: 54, borderRadius: 18 },
   sun: { position: "absolute", left: 78, top: 63, width: 64, height: 64, borderRadius: 32, backgroundColor: "#FFF4C9", alignItems: "center", justifyContent: "center", borderWidth: 4, borderColor: "#F6B84A" },
   title: { color: "#FFFFFF", fontSize: 24, lineHeight: 30, fontWeight: "900", letterSpacing: -0.45, textAlign: "center" },
-  subtitle: { color: "rgba(255,255,255,0.72)", fontSize: 13, lineHeight: 19, fontWeight: "600", marginTop: 4, textAlign: "center" },
+  subtitle: { color: "rgba(255,255,255,0.9)", fontSize: 15, lineHeight: 22, fontWeight: "700", marginTop: 4, textAlign: "center" },
 });

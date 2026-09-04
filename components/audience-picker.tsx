@@ -27,7 +27,7 @@ export function AudiencePicker({ pods, currentMemberId, selectedPodId, onChange,
       const isPrivate = item.id === "private";
       return <Pressable key={item.id} accessibilityRole="radio" accessibilityState={{ selected }} accessibilityLabel={isPrivate ? item.name : `${item.name}, ${item.memberCount} members`} onPress={() => { onChange(isPrivate ? undefined : item.id); haptic.selection(); }} style={({ pressed }) => [styles.option, compact && styles.optionCompact, { backgroundColor: selected ? colors.primarySoft : colors.surface, borderColor: selected ? colors.primary : colors.border, opacity: pressed ? 0.65 : 1 }]}>
         <View style={[styles.icon, { backgroundColor: selected ? colors.primary : colors.surfaceAlt }]}><AppIcon name={isPrivate ? "lock-closed-outline" : "people-outline"} size={compact ? 15 : 17} color={colors.ink} /></View>
-        <View style={styles.copy}><Text numberOfLines={1} style={[styles.name, { color: colors.ink }]}>{item.name}</Text>{compact ? null : <Text style={[styles.detail, { color: colors.muted }]}>{isPrivate ? "Only on this account" : `${item.memberCount} members`}</Text>}</View>
+        <View style={styles.copy}><Text style={[styles.name, { color: colors.ink }]}>{item.name}</Text>{compact ? null : <Text style={[styles.detail, { color: colors.muted }]}>{isPrivate ? "Only on this account" : `${item.memberCount} members`}</Text>}</View>
         {selected ? <AppIcon name="checkmark-circle" size={17} color={colors.coral} /> : null}
       </Pressable>;
     })}
@@ -36,14 +36,14 @@ export function AudiencePicker({ pods, currentMemberId, selectedPodId, onChange,
 
 const styles = StyleSheet.create({
   row: { gap: 8, paddingRight: 18 },
-  option: { minWidth: 166, minHeight: 58, paddingHorizontal: 11, borderRadius: 18, borderWidth: 1, flexDirection: "row", alignItems: "center", gap: 9 },
-  optionCompact: { minWidth: 126, minHeight: 46, borderRadius: 23, paddingHorizontal: 9 },
+  option: { minWidth: 172, minHeight: 62, paddingHorizontal: 11, paddingVertical: 8, borderRadius: 20, borderWidth: 1, flexDirection: "row", alignItems: "center", gap: 9 },
+  optionCompact: { minWidth: 132, minHeight: 50, borderRadius: 25, paddingHorizontal: 10, paddingVertical: 6 },
   icon: { width: 32, height: 32, borderRadius: 16, alignItems: "center", justifyContent: "center" },
-  copy: { flex: 1 },
-  name: { fontSize: 12, lineHeight: 17, fontWeight: "800", maxWidth: 118 },
-  detail: { fontSize: 10, lineHeight: 14, marginTop: 1 },
-  createOption: { minWidth: 126, minHeight: 58, paddingHorizontal: 11, borderRadius: 18, borderWidth: 1, flexDirection: "row", alignItems: "center", gap: 9 },
-  createOptionCompact: { minHeight: 46, borderRadius: 23, paddingHorizontal: 9 },
+  copy: { flex: 1, minWidth: 0 },
+  name: { fontSize: 15, lineHeight: 20, fontWeight: "800" },
+  detail: { fontSize: 13, lineHeight: 18, marginTop: 1 },
+  createOption: { minWidth: 132, minHeight: 62, paddingHorizontal: 11, paddingVertical: 8, borderRadius: 20, borderWidth: 1, flexDirection: "row", alignItems: "center", gap: 9 },
+  createOptionCompact: { minHeight: 50, borderRadius: 25, paddingHorizontal: 10, paddingVertical: 6 },
   createIcon: { width: 32, height: 32, borderRadius: 16, alignItems: "center", justifyContent: "center" },
-  createName: { fontSize: 12, lineHeight: 17, fontWeight: "900" },
+  createName: { fontSize: 15, lineHeight: 20, fontWeight: "900" },
 });
